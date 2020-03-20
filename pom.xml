@@ -69,6 +69,7 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aspects</artifactId>
+                <version>${spring.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.springframework/spring-jms -->
             <dependency>
@@ -167,6 +168,12 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid</artifactId>
                 <version>${druid.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.25</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
             <dependency>
