@@ -2,12 +2,15 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/c"
+       xmlns:context="http://www.springframework.org/schema/context"
 
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/tx
-        http://www.springframework.org/schema/tx/spring-tx.xsd
-">
+        http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--开启注解扫描，扫描已经注册的-->
+    <context:annotation-config/>
 
     <bean id = "dataSource" class = "com.alibaba.druid.pool.DruidDataSource" destroy-method = "close">
         <!-- 数据库基本信息配置 -->
@@ -85,9 +88,9 @@
         </tx:attributes>
     </tx:advice>
 
-    <!-- 配置事物切面 -->
+     <!--配置事物切面
     <aop:config>
-        <aop:pointcut expression="execution(* com.ldu.service.*.*(..))" id="serviceOperation"/>
+        <aop:pointcut expression="execution(* com.lz.service.*.*(..))" id="serviceOperation"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation"/>
-    </aop:config>
+    </aop:config>-->
 </beans>

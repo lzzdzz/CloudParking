@@ -9,7 +9,7 @@
         <module name="common" />
         <module name="common_service" />
         <module name="common_web" />
-        <module name="lz.interface" />
+        <module name="interface" />
         <module name="pojo" />
         <module name="service_cars" />
         <module name="web_manager" />

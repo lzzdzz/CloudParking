@@ -6,6 +6,8 @@
     <dubbo:application name="${dubbo.application}"></dubbo:application>
     <dubbo:protocol name="dubbo" port="${dubbo.port}"></dubbo:protocol>
     <dubbo:registry protocol="zookeeper" address="${zk.address}"></dubbo:registry>
+
     <dubbo:annotation package="com.lz.service.impl"></dubbo:annotation>
     <dubbo:provider timeout="10000" threadpool="fixed" accepts="1000"></dubbo:provider>
+
 </beans>
