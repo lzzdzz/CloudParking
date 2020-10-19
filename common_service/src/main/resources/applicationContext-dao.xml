@@ -87,10 +87,4 @@
             <tx:method name="*" propagation="REQUIRED" read-only="true" />
         </tx:attributes>
     </tx:advice>
-
-     <!--配置事物切面
-    <aop:config>
-        <aop:pointcut expression="execution(* com.lz.service.*.*(..))" id="serviceOperation"/>
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation"/>
-    </aop:config>-->
 </beans>

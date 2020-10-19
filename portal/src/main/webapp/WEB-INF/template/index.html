@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>云停车收费系统</title>
+    <link rel="stylesheet" href="../../css/element.css">
+
+    <style>
+        .img_top{
+            border-radius: 50%;
+        }
+        .el-header{
+            line-height: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 178px;
+            height: 178px;
+            line-height: 178px;
+            text-align: center;
+        }
+    </style>
+
+</head>
+<body>
+
+<el-container id = "app">
+    <el-header>
+        <div>
+            <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+                <el-menu-item index="1">
+                    <img src="../img/logo1.jpg" height="50" width="50" class="img_top">
+                </el-menu-item>
+                <el-menu-item index="2">云停车收费系统</el-menu-item>
+            </el-menu>
+        </div>
+        <div>
+            <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+                <el-submenu index="3">
+                    <template slot="title">
+                        <img src="../img/logo.jpg" height="50" width="50" class="img_top">
+                    </template>
+                    <el-menu-item index="3-1">登录后台</el-menu-item>
+                    <el-menu-item index="3-2">修改密码</el-menu-item>
+                    <el-menu-item index="3-3">退出</el-menu-item>
+                </el-submenu>
+                <el-menu-item index="4" th:text="${username}">Sakura</el-menu-item>
+            </el-menu>
+        </div>
+    </el-header>
+    <el-container style="height: 800px; border: 1px solid #eee">
+        <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+            <el-menu>
+                <el-submenu index="5">
+                    <template slot="title"><i class="el-icon-collection-tag"></i>人员管理模块</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="5-1" @click="car()">人员信息</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+            <el-menu>
+                <el-submenu index="6">
+                    <template slot="title"><i class="el-icon-collection-tag"></i>车辆管理模块</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="6-1" @click="car()">车辆信息</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+            <el-menu>
+                <el-submenu index="7">
+                    <template slot="title"><i class="el-icon-collection-tag"></i>区域管理模块</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="7-1" @click="area()">区域信息</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+            <el-menu>
+                <el-submenu index="8">
+                    <template slot="title"><i class="el-icon-collection-tag"></i>交接班模块</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="8-1" @click="exchangeuser()">交接班</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+            <el-menu>
+                <el-submenu index="9">
+                    <template slot="title"><i class="el-icon-collection-tag"></i>其他</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="9-1" @click="excle()">导出excel表格</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+        </el-aside>
+
+        <el-container>
+            <el-main>
+                <div >
+                    <h1 align="center" style="font-size: 40px">云停车收费系统</h1>
+                    <div align="center">
+                        <img src="../img/logo1.jpg" class="img_top">
+                    </div>
+                </div>
+            </el-main>
+        </el-container>
+    </el-container>
+</el-container>
+<!-- import Vue before Element -->
+<script src="../../js/vue.min.js"></script>
+<!-- import JavaScript -->
+<script src="../../js/element.js"></script>
+<script src="../../js/axios.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                tableData:[],
+                currentPage:1,
+                size:3,
+                total:10,
+                searchMap:{},
+                formVisable:false,
+                pojo:{},
+                imageUrl:'',
+                pickerOptions: {
+                    shortcuts: []
+                },
+                activeIndex: '1',
+                value1: new Date(),
+                value2: '',
+                value3: ''
+            }
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            user(){
+                window.location.href='../user.html';
+            },
+            car(){
+                    window.location.href='../car.html';
+            },
+            area(){
+                window.location.href='../area.html';
+            },
+            exchangeuser(){
+            },
+            excle(){
+                window.location.href='../log.html';
+            }
+        }
+    })
+</script>
+</body>
+</html>

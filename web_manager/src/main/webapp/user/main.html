@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>云停车收费系统</title>
+    <link rel="stylesheet" href="../css/element.css">
+    <style>
+        .img_top{
+            border-radius: 50%;
+        }
+        .el-header{
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+<el-container id = "app">
+    <el-header class="el-header">
+        <div>
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+            <el-menu-item index="1">
+                <img src="../img/logo1.jpg" height="50" width="50" class="img_top">
+            </el-menu-item>
+            <el-menu-item index="2">云停车收费系统</el-menu-item>
+        </el-menu>
+        </div>
+        <div>
+            <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+                <el-submenu index="3">
+                    <template slot="title">
+                        <img src="../img/logo.jpg" height="50" width="50" class="img_top">
+                    </template>
+                    <el-menu-item index="3-1">登录后台</el-menu-item>
+                    <el-menu-item index="3-2">退出</el-menu-item>
+                </el-submenu>
+                <el-menu-item index="3">Sakura</el-menu-item>
+            </el-menu>
+        </div>
+
+    </el-header>
+    <el-main>
+        <el-button type="primary" icon="el-icon-search" @click="formVisable = true">车辆进入</el-button><br>
+        <el-button type="primary" icon="el-icon-search" @click="formVisable1 = true">车辆离开</el-button><br>
+        <el-button type="primary" icon="el-icon-search" @click="fetchData">车辆查询</el-button><br>
+        <el-button type="primary" icon="el-icon-search">交接班</el-button><br>
+        <el-button type="primary" icon="el-icon-search">查看区域空缺</el-button><br>
+        <el-button type="primary" icon="el-icon-search">人工输入</el-button><br>
+
+        <el-dialog
+                title="车辆进入"
+                :visible.sync="formVisable">
+            <el-form >
+                <el-form-item label="车牌号">
+                    <el-input placeholder="车牌号" v-model="pojo.car_num"></el-input>
+                </el-form-item>
+                <el-form-item label="停靠区域">
+                    <el-input placeholder="停靠区域" v-model="pojo.areaname"></el-input>
+                </el-form-item>
+                <el-form-item label="停车时间">
+                    <el-date-picker
+                            v-model="pojo.start_time"
+                            type="datetime"
+                            placeholder="选择停车时间">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                    <el-button @click="save">提交</el-button>
+                    <el-button @click="formVisable = false">关闭</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+
+        <el-dialog
+                title="车辆离开"
+                :visible.sync="formVisable1">
+            <el-form >
+                <el-form-item label="车牌号">
+                    <el-input placeholder="车牌号" v-model="pojo.car_num"></el-input>
+                </el-form-item>
+                <el-form-item label="离开时间">
+                    <el-date-picker
+                            v-model="pojo.end_time"
+                            type="datetime"
+                            placeholder="选择离开时间">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                    <el-button @click="update1">保存</el-button>
+                    <el-button @click="formVisable1 = false">关闭</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+
+    </el-main>
+</el-container>
+
+<script src="../js/vue.js"></script>
+<!-- import JavaScript -->
+<script src="../js/element.js"></script>
+<script src="../js/axios.js"></script>
+
+<script>
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                pojo:[],
+                formVisable: false,
+                formVisable1: false,
+                searchMap:{},
+                activeIndex: '1',
+                pickerOptions: {
+                    shortcuts: []
+                },
+                value1: '',
+                value2: '',
+                value3: ''
+            };
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            save(){
+                axios.post(`/area/add.do`,this.pojo).then(response=>{
+                    this.pojo=response.data;
+                    this.formVisable=false;
+                })
+            },
+            update1(){
+                axios.post(`/area/update.do`,this.pojo).then(response=>{
+                    this.pojo=response.data;
+                    this.formVisable1=false;
+                })
+            },
+            money(){
+                this.formVisable1=false;
+            },
+            fetchData(){
+                axios.post(`/area/findList.do`,this.pojo).then(response=>{
+                    this.pojo=response.data;
+                    this.formVisable=false;
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>

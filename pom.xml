@@ -13,8 +13,12 @@
         <module>common_web</module>
         <module>pojo</module>
         <module>interface</module>
-        <module>service_cars</module>
         <module>web_manager</module>
+        <module>service_area</module>
+        <module>portal</module>
+        <module>service_car</module>
+        <module>service_log</module>
+        <module>service_user</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -33,6 +37,7 @@
         <commons-fileupload.version>1.3.1</commons-fileupload.version>
         <spring.security.version>5.0.5.RELEASE</spring.security.version>
         <jackson.version>2.9.5</jackson.version>
+        <fastjson.version>1.2.47</fastjson.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -86,6 +91,7 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -124,23 +130,21 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
-                <version>1.2.47</version>
+                <version>${fastjson.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-scala_2.10</artifactId>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
-
             <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-paranamer</artifactId>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
-
             <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-jaxb-annotations</artifactId>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
 

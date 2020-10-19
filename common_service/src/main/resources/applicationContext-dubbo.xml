@@ -9,5 +9,4 @@
 
     <dubbo:annotation package="com.lz.service.impl"></dubbo:annotation>
     <dubbo:provider timeout="10000" threadpool="fixed" accepts="1000"></dubbo:provider>
-
 </beans>

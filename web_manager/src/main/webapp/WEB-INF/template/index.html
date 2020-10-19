@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>云停车收费系统</title>
+    <link rel="stylesheet" href="../css/element.css">
+
+    <style>
+        .img_top{
+            border-radius: 50%;
+        }
+        .el-header{
+            line-height: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 178px;
+            height: 178px;
+            line-height: 178px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<el-container id = "app">
+    <el-header>
+        <div>
+            <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+                <el-menu-item index="1">
+                    <img src="../img/logo1.jpg" height="50" width="50" class="img_top">
+                </el-menu-item>
+                <el-menu-item index="2">云停车收费系统</el-menu-item>
+            </el-menu>
+        </div>
+        <div>
+            <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+                <el-submenu index="3">
+                    <template slot="title">
+                        <img src="../img/logo.jpg" height="50" width="50" class="img_top">
+                    </template>
+                    <el-menu-item index="3-1">登录后台</el-menu-item>
+                    <el-menu-item index="3-2">退出</el-menu-item>
+                </el-submenu>
+                <el-menu-item index="3" th:text="${name}">Sakura</el-menu-item>
+            </el-menu>
+        </div>
+    </el-header>
+    <el-container style="height: 800px; border: 1px solid #eee">
+        <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+            <el-menu>
+                <el-submenu index="1">
+                    <template slot="title"><i class="el-icon-collection-tag"></i>车辆模块</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="1-1" @click="test()">车辆进入</el-menu-item>
+                        <el-menu-item index="1-2">车辆离开</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+            <el-menu>
+                <el-submenu index="2">
+                    <template slot="title"><i class="el-icon-collection-tag"></i>区域模块</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="1-3">区域车辆查询</el-menu-item>
+                        <el-menu-item index="1-4">查看区域空缺</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+            <el-menu>
+                <el-submenu index="2">
+                    <template slot="title"><i class="el-icon-collection-tag"></i>人员模块</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="1-5">交接班</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+            <el-menu>
+                <el-submenu index="1">
+                    <template slot="title"><i class="el-icon-collection-tag"></i>其他</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="1-1">导出excel表格</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+        </el-aside>
+
+        <el-container>
+            <el-main>
+                <div >
+                    <el-form :inline="true">
+                        <el-form-item label="姓名">
+                            <el-input placeholder="姓名" v-model="searchMap.username"></el-input>
+                        </el-form-item>
+                        <el-button type="primary" @click="fetchData">查询</el-button>
+                        <el-button type="primary" @click="formVisable=true">新增</el-button>
+                    </el-form>
+
+                    <el-table
+                            :data="tableData"
+                            stripe
+                            style="width: 100%">
+                        <el-table-column
+                                prop="id"
+                                label="ID"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                prop="username"
+                                label="姓名"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                prop="image"
+                                label="图片地址"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                label="图片"
+                                width="180">
+                            <template slot-scope="scope">
+                                <img :src="scope.row.image" width="180">
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="操作"
+                                width="180">
+                            <template slot-scope="scope">
+                                <el-button type="text" @click="edit(scope.row.id)" size="small">修改</el-button>
+                                <el-button type="text" @click="dele(scope.row.id)">删除</el-button>
+                            </template>
+                        </el-table-column>
+
+                    </el-table>
+
+                    <el-pagination
+                            @size-change="fetchData"
+                            @current-change="fetchData"
+                            :current-page.sync="currentPage"
+                            :page-sizes="[3, 6, 9, 12]"
+                            :page-size="size"
+                            layout="total, sizes, prev, pager, next, jumper"
+                            :total="total">
+                    </el-pagination>
+
+                    <el-dialog
+                            title="用户编辑"
+                            :visible.sync="formVisable">
+                        <el-form >
+                            <el-form-item label="姓名">
+                                <el-input placeholder="姓名" v-model="pojo.username"></el-input>
+                            </el-form-item>
+                            <el-form-item label="图片地址">
+                                <el-upload
+                                        class="avatar-uploader"
+                                        action="/upload/native.do?folder=user"
+                                        :show-file-list="false"
+                                        :on-success="handleAvatarSuccess"
+                                        :before-upload="beforeAvatarUpload">
+                                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                </el-upload>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button @click="save">保存</el-button>
+                                <el-button @click="formVisable = false">关闭</el-button>
+                            </el-form-item>
+
+                        </el-form>
+
+                    </el-dialog>
+                </div>
+            </el-main>
+        </el-container>
+    </el-container>
+</el-container>
+<!-- import Vue before Element -->
+<script src="../js/vue.js"></script>
+<!-- import JavaScript -->
+<script src="../js/element.js"></script>
+<script src="../js/axios.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                tableData:[],
+                currentPage:1,
+                size:3,
+                total:10,
+                searchMap:{},
+                formVisable:false,
+                pojo:{},
+                imageUrl:'',
+                pickerOptions: {
+                    shortcuts: []
+                },
+                activeIndex: '1',
+                value1: new Date(),
+                value2: '',
+                value3: ''
+            }
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            test(){
+                axios.post(`/index.do`);
+            },
+            fetchData(){
+                axios.post(`/user/findResultPage.do?page=${this.currentPage}&size=${this.size}`,this.searchMap).then(response=>{
+                    this.tableData=response.data.rows;
+                    this.total=response.data.total;
+                })
+            },
+            save(){
+                this.pojo.image = this.imageUrl;
+                axios.post(`/user/${this.pojo.id==null?'add':'update'}.do`,this.pojo).then(response=>{
+                    this.formVisable = false;
+                    this.fetchData();
+                    this.imageUrl=this.pojo.image;
+                })
+            },
+            cleardata(){
+                this.pojo.username = '';
+                this.pojo.image = '';
+            },
+            edit(id){
+                this.formVisable=true;
+                axios.get(`/user/findById.do?id=${id}`).then(response=>{
+                    this.pojo=response.data;
+                    this.imageUrl=this.pojo.image;
+                })
+                this.fetchData();
+            },
+            dele(id){
+                this.$confirm('确认删除?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.get(`/user/delete.do?id=${id}`).then(response=>{
+                        this.$alert("删除成功","提示");
+                        this.fetchData();
+                    })
+                })
+            },
+            handleAvatarSuccess(res, file) {
+                this.imageUrl = file.response;
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            }
+        }
+    })
+</script>
+</body>
+</html>

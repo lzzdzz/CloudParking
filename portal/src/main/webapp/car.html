@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>云停车收费系统</title>
+    <link rel="stylesheet" href="css/element.css">
+
+    <style>
+        .img_top{
+            border-radius: 50%;
+        }
+        .el-header{
+            line-height: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+<el-container id = "app">
+    <el-header>
+        <div>
+            <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+                <el-menu-item index="1">
+                    <img src="img/logo1.jpg" height="50" width="50" class="img_top">
+                </el-menu-item>
+                <el-menu-item index="2">云停车收费系统</el-menu-item>
+            </el-menu>
+        </div>
+        <div>
+            <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+                <el-submenu index="3">
+                    <template slot="title">
+                        <img src="img/logo.jpg" height="50" width="50" class="img_top">
+                    </template>
+                    <el-menu-item index="3-1">登录后台</el-menu-item>
+                    <el-menu-item index="3-2">退出</el-menu-item>
+                </el-submenu>
+                <el-menu-item index="4" >Sakura</el-menu-item>
+            </el-menu>
+        </div>
+    </el-header>
+    <el-container style="height: 800px; border: 1px solid #eee">
+        <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+            <el-menu>
+                <el-submenu index="5">
+                    <template slot="title"><i class="el-icon-collection-tag"></i>人员管理模块</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="5-1" @click="user()">人员信息</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+            <el-menu>
+                <el-submenu index="6">
+                    <template slot="title"><i class="el-icon-collection-tag"></i>车辆管理模块</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="6-1" @click="car()" >车辆信息</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+            <el-menu>
+                <el-submenu index="7">
+                    <template slot="title"><i class="el-icon-collection-tag"></i>区域管理模块</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="7-1" @click="area()">区域信息查询</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+            <el-menu>
+                <el-submenu index="8">
+                    <template slot="title"><i class="el-icon-collection-tag"></i>交接班模块</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="8-1" @click="exchange()">交接班</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+            <el-menu>
+                <el-submenu index="9">
+                    <template slot="title"><i class="el-icon-collection-tag"></i>其他</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="9-1" @click="showExcle()">导出excel表格</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+        </el-aside>
+
+        <el-container>
+
+            <el-main>
+                <el-form :inline="true">
+                    <el-form-item label="车牌号">
+                        <el-input placeholder="车牌号" v-model="searchMap.carnum"></el-input>
+                    </el-form-item>
+                    <el-button type="primary" @click="fetchData">查询</el-button>
+                    <el-button type="primary" @click="formVisable=true">车辆进入</el-button>
+                </el-form>
+
+                <el-table
+                        :data="tableData"
+                        border
+                        style="height: 650px"
+                        style="width: 100%">
+                    <el-table-column
+                            prop="id"
+                            label="ID"
+                            width="120">
+                    </el-table-column>
+                    <el-table-column
+                            prop="carnum"
+                            label="车牌号"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="areaname"
+                            label="区域名"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="carhost"
+                            label="车主姓名"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="cartype"
+                            label="车类型"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="starttime"
+                            label="进入时间"
+                            :formatter="formatDate"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="endtime"
+                            label="离开时间"
+                            :formatter="formatDate"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="money"
+                            label="停车费用"
+                            width="120">
+                    </el-table-column>
+                    <el-table-column
+                            label="操作"
+                            width="120">
+                        <template slot-scope="scope">
+                            <!--<el-button type="text" @click="edit(scope.row.id)" size="small">修改</el-button>-->
+                            <el-button type="text" @click="edit(scope.row.id)">车辆离开</el-button>
+                        </template>
+                    </el-table-column>
+
+                </el-table>
+
+                <el-pagination
+                        @size-change="fetchData"
+                        @current-change="fetchData"
+                        :current-page.sync="currentPage"
+                        :page-sizes="[9, 18, 27, 36]"
+                        :page-size="size"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="total">
+                </el-pagination>
+
+                <el-dialog
+                        title="车辆编辑"
+                        :visible.sync="formVisable">
+                    <el-form >
+                        <el-form-item label="车牌号">
+                            <el-input placeholder="车牌号" v-model="pojo.carnum"></el-input>
+                        </el-form-item>
+                        <el-form-item label="区域名">
+                            <el-input placeholder="区域名" v-model="pojo.areaname"></el-input>
+                        </el-form-item>
+                        <el-form-item label="车主姓名">
+                            <el-input placeholder="车主姓名" v-model="pojo.carhost"></el-input>
+                        </el-form-item>
+                        <el-form-item label="车类型">
+                            <el-input placeholder="车类型" v-model="pojo.cartype"></el-input>
+                        </el-form-item>
+                        <el-form-item label="进入时间">
+                            <el-date-picker
+                                    v-model="pojo.starttime"
+                                    type="datetime"
+                                    placeholder="进入时间">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="离开时间">
+                        <el-date-picker
+                                v-model="pojo.endtime"
+                                type="datetime"
+                                placeholder="离开时间">
+                        </el-date-picker>
+                        </el-form-item>
+                        <!--<el-form-item label="进入时间">
+                            <el-input placeholder="进入时间" v-model="pojo.starttime"></el-input>
+                        </el-form-item>
+                        <el-form-item label="离开时间">
+                            <el-input placeholder="离开时间" v-model="pojo.endtime"></el-input>
+                        </el-form-item>-->
+                        <el-form-item>
+                            <el-button @click="save">保存</el-button>
+                            <el-button @click="formVisable = false">关闭</el-button>
+                        </el-form-item>
+
+                    </el-form>
+
+                </el-dialog>
+            </el-main>
+
+        </el-container>
+    </el-container>
+</el-container>
+<!-- import Vue before Element -->
+<script src="js/vue.min.js"></script>
+<!-- import JavaScript -->
+<script src="js/element.js"></script>
+<script src="js/axios.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                tableData: [{
+                }],
+                tableData:[],
+                currentPage:1,
+                size:9,
+                total:10,
+                searchMap:{},
+                formVisable:false,
+                pojo:{},
+                pickerOptions: {
+                    shortcuts: []
+                },
+                activeIndex: '1',
+                value1: new Date(),
+                value2: '',
+                value3: ''
+            }
+        },
+        created(){
+            this.fetchData()
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            fetchData(){
+                axios.post(`/car/findResultPage.do?page=${this.currentPage}&size=${this.size}`,this.searchMap).then(response=>{
+                    this.tableData=response.data.rows;
+                    this.total=response.data.total;
+                })
+            },
+            save(){
+                axios.post(`/car/${this.pojo.id==null?'add':'update'}.do`,this.pojo).then(response=>{
+                    this.formVisable = false;
+                    this.fetchData();
+                })
+            },
+            edit(id){
+                this.formVisable=true;
+                axios.get(`/car/findById.do?id=${id}`).then(response=>{
+                    this.pojo=response.data;
+                })
+                this.fetchData();
+            },
+            dele(id){
+                this.$confirm('确认离开?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.get(`/car/delete.do?id=${id}`).then(response=>{
+                        this.$alert("车辆离开","提示");
+                        this.fetchData();
+                    })
+                })
+            },
+            handleAvatarSuccess(res, file) {
+                this.imageUrl = file.response;
+            },
+            //方法区
+            formatDate(row, column) {
+                // 获取单元格数据
+                let data = row[column.property]
+                if(data == null) {
+                    return null
+                }
+                let dt = new Date(data)
+                return dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds()
+            },
+            user(){
+                window.location.href='/user.html';
+            },
+            car(){
+                window.location.href='/car.html';
+            },
+            area(){
+                window.location.href='/area.html';
+            },
+            exchangeuser(){
+            },
+            showExcle(){
+                window.location.href='/log.html';
+            }
+        }
+    })
+</script>
+</body>
+</html>
